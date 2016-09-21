@@ -1,0 +1,34 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+import xmlrpclib
+import sys
+import os
+
+port = 6969
+
+
+if __name__ == '__main__':
+
+    try:
+        summary = sys.argv[1]
+    except IndexError:
+        summary = 'LOL'
+
+    try:
+        description = sys.argv[2]
+    except IndexError:
+        description = ''
+
+    hosts = sys.argv[3:]
+    if not hosts:
+        with open(os.path.expanduser('~/.prrc')) as f:
+            hosts = filter(None, map(str.strip, f))
+
+    for host in hosts:
+        try:
+            prd = xmlrpclib.ServerProxy('http://{}:{}'.format(host, port))
+            prd.message(summary, description)
+        except Exception as e:
+            print >> sys.stderr, "Could not deliver to {}: {}".format(host, e)
+            continue

@@ -1,0 +1,45 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+import subprocess
+import threading
+import time
+from SimpleXMLRPCServer import SimpleXMLRPCServer
+
+
+class CQuickXMLRPCServer(threading.Thread, SimpleXMLRPCServer, object):
+
+    def __init__(self, port, bind='0.0.0.0', *args, **kwargs):
+        kwargs.setdefault('allow_none', True)
+
+        threading.Thread.__init__(self)
+        SimpleXMLRPCServer.__init__(self, (bind, port), *args, **kwargs)
+
+        if kwargs.get('register_introspection_functions', True):
+            self.register_introspection_functions()
+
+        if kwargs.get('register_multicall_function', True):
+            self.register_multicall_functions()
+
+    def run(self):
+        self.serve_forever()
+
+
+def message(summary='LOL', description=''):
+    subprocess.call(['notify-send', summary, description])
+
+
+if __name__ == '__main__':
+
+    server = CQuickXMLRPCServer(port=6969)
+    try:
+        server.register_function(message, 'message')
+        server.start()
+
+        while True:
+            time.sleep(0.1)
+
+    except KeyboardInterrupt:
+        server.shutdown()
+        server.join(10.0)
+
