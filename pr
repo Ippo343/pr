@@ -3,9 +3,18 @@
 
 import xmlrpclib
 import sys
+import threading
 import os
 
 port = 6969
+
+
+def send(host, summary, description):
+    try:
+        prd = xmlrpclib.ServerProxy('http://{}:{}'.format(host, port))
+        prd.message(summary, description)
+    except Exception as e:
+        print >> sys.stderr, "Could not deliver to {}: {}".format(host, e)
 
 
 if __name__ == '__main__':
@@ -24,9 +33,4 @@ if __name__ == '__main__':
             hosts = [h for h in map(str.strip, f) if h and not h.startswith('#')]
 
     for host in hosts:
-        try:
-            prd = xmlrpclib.ServerProxy('http://{}:{}'.format(host, port))
-            prd.message(summary, description)
-        except Exception as e:
-            print >> sys.stderr, "Could not deliver to {}: {}".format(host, e)
-            continue
+        send(host, summary, description)
