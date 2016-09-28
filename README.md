@@ -2,4 +2,5 @@
 pr
 
 Usage:
-pr [s [d [h...]]]
+pr s [-- d [-- h1 h2 ...]]
+

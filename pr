@@ -10,17 +10,15 @@ port = 6969
 
 if __name__ == '__main__':
 
-    try:
-        summary = sys.argv[1]
-    except IndexError:
-        summary = 'LOL'
+    parts = [s.strip() for s in ' '.join(sys.argv[1:]).split('--')]
+    while len(parts) < 3:
+        parts += ['']
+    summary, description, hosts = parts
 
-    try:
-        description = sys.argv[2]
-    except IndexError:
-        description = ''
+    # La A sta per Alarm
+    summary = summary or 'PA'
 
-    hosts = sys.argv[3:]
+    hosts = hosts.split()
     if not hosts:
         with open(os.path.expanduser('~/.prrc')) as f:
             hosts = [h for h in map(str.strip, f) if h and not h.startswith('#')]
