@@ -23,7 +23,7 @@ if __name__ == '__main__':
     hosts = sys.argv[3:]
     if not hosts:
         with open(os.path.expanduser('~/.prrc')) as f:
-            hosts = filter(None, map(str.strip, f))
+            hosts = [h for h in map(str.strip, f) if h and not h.startswith('#')]
 
     for host in hosts:
         try:
