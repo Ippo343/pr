@@ -32,5 +32,11 @@ if __name__ == '__main__':
         with open(os.path.expanduser('~/.prrc')) as f:
             hosts = [h for h in map(str.strip, f) if h and not h.startswith('#')]
 
+    threads = []
     for host in hosts:
-        send(host, summary, description)
+        ht = threading.Thread(target=send, args=(host, summary, description))
+        threads.append(ht)
+        ht.start()
+
+    for ht in threads:
+        ht.join(5.0)
