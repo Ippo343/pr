@@ -47,7 +47,7 @@ class PRServer(CQuickXMLRPCServer):
 
         self.register_function(self.register)
         self.register_function(self.deregister)
-        self.register_function(self.send)
+        self.register_function(self.message)
         self.register_function(self.list_peers)
 
     def list_peers(self):
@@ -71,7 +71,7 @@ class PRServer(CQuickXMLRPCServer):
             logging.error("Could not deliver to {}: {}".format(host, e))
             self.host_failures[host] += 1
 
-    def send(self, summary='PA', description=''):
+    def message(self, summary='PA', description=''):
 
         # Auto-register on first message
         self.register(address=self.client_address)
