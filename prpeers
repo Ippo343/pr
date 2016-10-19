@@ -1,0 +1,28 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+import xmlrpclib
+import os
+
+port = 16969
+
+
+if __name__ == '__main__':
+
+    with open(os.path.expanduser('~/.prrc')) as f:
+        hosts = [h for h in map(str.strip, f) if h and not h.startswith('#')]
+
+    for host in hosts:
+        if ':' in host:
+            host, _port = host.split(':')
+        else:
+            _port = port
+
+        s = xmlrpclib.ServerProxy('http://{}:{}'.format(host, _port))
+        if 'list_peers' in s.system.listMethods():
+            peers = s.list_peers()
+            print "Peers on server {}:".format(host)
+            for p in peers:
+                print "\t{}".format(p)
+
+
