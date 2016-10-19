@@ -11,7 +11,12 @@ port = 6969
 
 def send(host, summary, description):
     try:
-        prd = xmlrpclib.ServerProxy('http://{}:{}'.format(host, port))
+        if ':' in host:
+            host, _port = host.split(':')
+        else:
+            _port = port
+
+        prd = xmlrpclib.ServerProxy('http://{}:{}'.format(host, int(_port)))
         prd.message(summary, description)
     except Exception as e:
         print >> sys.stderr, "Could not deliver to {}: {}".format(host, e)
